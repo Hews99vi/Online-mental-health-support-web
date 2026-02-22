@@ -1,0 +1,80 @@
+.denied {
+    min-height: 70vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem;
+}
+
+.deniedCard {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 1rem;
+    background: #fff;
+    border: 1.5px solid #fee2e2;
+    border-radius: 1.25rem;
+    padding: 3rem 2.5rem;
+    max-width: 28rem;
+    width: 100%;
+    box-shadow: 0 8px 32px rgba(220, 38, 38, 0.08);
+}
+
+.deniedIcon {
+    color: #dc2626;
+    opacity: 0.8;
+}
+
+.deniedTitle {
+    font-family: 'Outfit', 'Inter', sans-serif;
+    font-size: 1.75rem;
+    font-weight: 800;
+    color: #1e1b3a;
+    margin: 0;
+    letter-spacing: -0.02em;
+}
+
+/* Remove default focus outline; keep a subtle custom one for keyboard users */
+.deniedTitle:focus {
+    outline: none;
+}
+
+.deniedTitle:focus-visible {
+    outline: 3px solid #dc2626;
+    outline-offset: 4px;
+    border-radius: 4px;
+}
+
+.deniedMessage {
+    color: #6b7280;
+    line-height: 1.65;
+    margin: 0;
+    font-size: 0.9375rem;
+}
+
+.deniedBackLink {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    margin-top: 0.5rem;
+    padding: 0.6rem 1.25rem;
+    background: #f9fafb;
+    border: 1.5px solid #e5e7eb;
+    border-radius: 0.625rem;
+    color: #374151;
+    font-weight: 600;
+    font-size: 0.9rem;
+    text-decoration: none;
+    transition: border-color 0.15s, background 0.15s;
+}
+
+.deniedBackLink:hover {
+    border-color: #9ca3af;
+    background: #f3f4f6;
+}
+
+.deniedBackLink:focus-visible {
+    outline: 3px solid #7c3aed;
+    outline-offset: 2px;
+}

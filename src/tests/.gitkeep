@@ -1,0 +1,10 @@
+/**
+ * src/tests/.gitkeep
+ * Placeholder for Vitest test files.
+ * Example structure:
+ *   tests/
+ *     auth.test.ts       — Auth context unit tests
+ *     http.test.ts       — Fetch wrapper tests
+ *     Button.test.tsx    — UI kit component tests
+ *     Router.test.tsx    — Route guard tests
+ */

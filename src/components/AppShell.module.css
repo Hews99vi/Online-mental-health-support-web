@@ -1,0 +1,385 @@
+/* ═══════════════════════════════════════════════
+   AppShell layout
+═══════════════════════════════════════════════ */
+
+.shell {
+    display: grid;
+    grid-template-rows: var(--topnav-height, 4rem) 1fr auto;
+    /* nav | content | footer */
+    grid-template-columns: var(--sidenav-width, 15.5rem) 1fr;
+    grid-template-areas:
+        'topnav  topnav'
+        'sidenav main'
+        'sidenav footer';
+    min-height: 100dvh;
+}
+
+/* ── When side nav is collapsed ──────────────────── */
+.shell.navCollapsed {
+    grid-template-columns: var(--sidenav-collapsed-width, 3.5rem) 1fr;
+}
+
+/* ── TopNav ──────────────────────────────────────── */
+.topNav {
+    grid-area: topnav;
+    position: sticky;
+    top: 0;
+    z-index: 200;
+    background: rgba(255, 255, 255, 0.9);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--color-border, #e5e7eb);
+    display: flex;
+    align-items: center;
+    padding: 0 1.25rem;
+    gap: 1rem;
+    box-shadow: 0 1px 8px rgba(0, 0, 0, 0.06);
+}
+
+.logo {
+    display: flex;
+    align-items: center;
+    gap: 0.625rem;
+    text-decoration: none;
+    color: var(--color-primary, #6d28d9);
+    font-family: 'Outfit', 'Inter', sans-serif;
+    font-weight: 700;
+    font-size: 1.125rem;
+    flex-shrink: 0;
+}
+
+.logoMark {
+    width: 2rem;
+    height: 2rem;
+    background: linear-gradient(135deg, #6d28d9, #a78bfa);
+    border-radius: 0.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+    font-size: 1rem;
+}
+
+.topNavSpacer {
+    flex: 1;
+}
+
+.topNavActions {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.avatarBtn {
+    width: 2.25rem;
+    height: 2.25rem;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #a78bfa, #6d28d9);
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+    font-weight: 600;
+    font-size: 0.875rem;
+    transition: box-shadow 0.18s;
+}
+
+.avatarBtn:hover {
+    box-shadow: 0 0 0 3px rgba(109, 40, 217, 0.25);
+}
+
+.avatarBtn:focus-visible {
+    outline: 3px solid var(--color-focus-ring, #7c3aed);
+    outline-offset: 2px;
+}
+
+.hamburger {
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0.375rem;
+    border-radius: 0.375rem;
+    color: var(--color-text, #1e1b3a);
+    font-size: 1.25rem;
+    transition: background 0.15s;
+}
+
+.hamburger:hover {
+    background: var(--color-surface-hover, #f3f4f6);
+}
+
+.hamburger:focus-visible {
+    outline: 3px solid var(--color-focus-ring, #7c3aed);
+    outline-offset: 2px;
+}
+
+/* ── Professional icon button (replaces .hamburger) ── */
+.iconBtn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0.5rem;
+    border-radius: 0.5rem;
+    color: var(--color-text, #374151);
+    transition: background 0.15s, color 0.15s;
+    flex-shrink: 0;
+}
+
+.iconBtn:hover {
+    background: var(--color-surface-hover, #f3f4f6);
+    color: var(--color-primary, #6d28d9);
+}
+
+.iconBtn:focus-visible {
+    outline: 3px solid var(--color-focus-ring, #7c3aed);
+    outline-offset: 2px;
+}
+
+/* ── Sign-in link in top nav when logged out ── */
+.signInLink {
+    display: flex;
+    align-items: center;
+    gap: 0.375rem;
+    padding: 0.4rem 0.875rem;
+    background: var(--color-primary, #6d28d9);
+    color: #fff;
+    border-radius: 0.5rem;
+    font-size: 0.875rem;
+    font-weight: 600;
+    text-decoration: none;
+    transition: background 0.15s;
+}
+
+.signInLink:hover {
+    background: #5b21b6;
+}
+
+.signInLink:focus-visible {
+    outline: 3px solid var(--color-focus-ring, #7c3aed);
+    outline-offset: 2px;
+}
+
+/* ── SideNav ──────────────────────────────────────── */
+.sideNav {
+    grid-area: sidenav;
+    position: sticky;
+    top: var(--topnav-height, 4rem);
+    height: calc(100dvh - var(--topnav-height, 4rem));
+    overflow-y: auto;
+    overflow-x: hidden;
+    background: #0f172a;
+    border-right: 1px solid rgba(255, 255, 255, 0.06);
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    transition: width 0.22s ease;
+    scrollbar-width: thin;
+    scrollbar-color: rgba(255, 255, 255, 0.1) transparent;
+}
+
+.navSection {
+    margin-top: 1rem;
+}
+
+.navSectionLabel {
+    font-size: 0.6875rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--color-text-muted, #9ca3af);
+    padding: 0 0.625rem;
+    margin-bottom: 0.25rem;
+}
+
+.navLink {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.625rem 0.75rem;
+    border-radius: 0.625rem;
+    color: var(--color-text, #374151);
+    text-decoration: none;
+    font-size: 0.9375rem;
+    font-weight: 500;
+    transition: background 0.15s, color 0.15s;
+    white-space: nowrap;
+    overflow: hidden;
+}
+
+.navLink:hover {
+    background: var(--color-primary-light, #ede9fe);
+    color: var(--color-primary, #6d28d9);
+}
+
+.navLink.active {
+    background: var(--color-primary-light, #ede9fe);
+    color: var(--color-primary, #6d28d9);
+    font-weight: 600;
+}
+
+.navLink:focus-visible {
+    outline: 3px solid var(--color-focus-ring, #7c3aed);
+    outline-offset: -2px;
+}
+
+.navIcon {
+    flex-shrink: 0;
+}
+
+.navChevron {
+    margin-left: auto;
+    opacity: 0;
+    color: var(--color-text-muted, #9ca3af);
+    transition: opacity 0.15s;
+    flex-shrink: 0;
+}
+
+.navLink:hover .navChevron,
+.navLink.active .navChevron {
+    opacity: 1;
+}
+
+/* Collapsed state — hide labels and chevrons */
+.collapsed .navLabel,
+.collapsed .navChevron {
+    display: none;
+}
+
+.navLabel {
+    opacity: 1;
+    transition: opacity 0.18s;
+}
+
+.navCollapsed .navLabel {
+    opacity: 0;
+    width: 0;
+}
+
+/* ── Main & Footer ──────────────────────────────── */
+.main {
+    grid-area: main;
+    padding: 1.75rem 2rem;
+    min-height: 0;
+    background: #f8f9fc;
+}
+
+.footer {
+    grid-area: footer;
+    background: var(--color-surface, #fff);
+    border-top: 1px solid var(--color-border, #e5e7eb);
+    padding: 1rem 2rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-size: 0.8125rem;
+    color: var(--color-text-muted, #6b7280);
+}
+
+.footerLinks {
+    display: flex;
+    gap: 1.25rem;
+}
+
+.footerLink {
+    color: var(--color-text-muted, #6b7280);
+    text-decoration: none;
+}
+
+.footerLink:hover {
+    color: var(--color-primary, #6d28d9);
+    text-decoration: underline;
+}
+
+/* ── Get Help Floating Button ─────────────────── */
+.getHelpBtn {
+    position: fixed;
+    bottom: 1.75rem;
+    right: 1.75rem;
+    z-index: 500;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: linear-gradient(135deg, #ef4444, #b91c1c);
+    color: #fff;
+    font-family: 'Outfit', 'Inter', sans-serif;
+    font-weight: 700;
+    font-size: 0.9375rem;
+    border: none;
+    border-radius: 3rem;
+    padding: 0.75rem 1.375rem;
+    box-shadow: 0 6px 24px rgba(239, 68, 68, 0.45);
+    cursor: pointer;
+    transition: transform 0.18s ease, box-shadow 0.18s ease;
+    animation: pulseGlow 2.5s infinite;
+}
+
+.getHelpBtn:hover {
+    transform: translateY(-2px) scale(1.04);
+    box-shadow: 0 10px 32px rgba(239, 68, 68, 0.55);
+}
+
+.getHelpBtn:focus-visible {
+    outline: 3px solid #fca5a5;
+    outline-offset: 3px;
+}
+
+@keyframes pulseGlow {
+
+    0%,
+    100% {
+        box-shadow: 0 6px 24px rgba(239, 68, 68, 0.45);
+    }
+
+    50% {
+        box-shadow: 0 6px 36px rgba(239, 68, 68, 0.65);
+    }
+}
+
+/* ── Responsive ──────────────────────────────────── */
+@media (max-width: 768px) {
+    .shell {
+        grid-template-columns: 1fr;
+        grid-template-areas:
+            'topnav'
+            'main'
+            'footer';
+    }
+
+    .sideNav {
+        display: none;
+        background: #0f172a;
+    }
+
+    .sideNav.mobileOpen {
+        display: flex;
+        position: fixed;
+        top: 0;
+        left: 0;
+        bottom: 0;
+        width: 17rem;
+        z-index: 300;
+        box-shadow: 4px 0 32px rgba(0, 0, 0, 0.35);
+    }
+
+    .main {
+        padding: 1.25rem 1rem;
+    }
+
+    .footer {
+        flex-direction: column;
+        gap: 0.5rem;
+        text-align: center;
+    }
+
+    .getHelpBtn {
+        bottom: 1.25rem;
+        right: 1.25rem;
+        padding: 0.625rem 1rem;
+        font-size: 0.875rem;
+    }
+}

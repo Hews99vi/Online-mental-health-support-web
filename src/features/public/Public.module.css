@@ -1,0 +1,346 @@
+/* Shared styles for all public pages */
+
+/* ── Page wrapper ──────────────────────────────── */
+.page {
+    min-height: 60vh;
+}
+
+/* ── Hero ──────────────────────────────────────── */
+.hero {
+    max-width: 72rem;
+    margin: 0 auto;
+    padding: 5rem 2rem 4rem;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1.25rem;
+}
+
+.heroBadge {
+    display: inline-block;
+    background: linear-gradient(135deg, #ede9fe, #d1fae5);
+    color: #4c1d95;
+    font-size: 0.8125rem;
+    font-weight: 700;
+    padding: 0.3rem 0.875rem;
+    border-radius: 999px;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+}
+
+.heroTitle {
+    font-family: 'Outfit', 'Inter', sans-serif;
+    font-size: clamp(2rem, 6vw, 3.5rem);
+    font-weight: 800;
+    line-height: 1.15;
+    color: #1e1b3a;
+    margin: 0;
+    letter-spacing: -0.03em;
+}
+
+.heroAccent {
+    background: linear-gradient(135deg, #7c3aed, #0ea5e9);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.heroSubtitle {
+    max-width: 38rem;
+    font-size: 1.125rem;
+    color: #4b5563;
+    margin: 0;
+    line-height: 1.6;
+}
+
+.heroCta {
+    display: flex;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+.heroDisclaimer {
+    font-size: 0.8125rem;
+    color: #6b7280;
+    background: #fef9f0;
+    border: 1px solid #fcd34d;
+    border-radius: 0.5rem;
+    padding: 0.625rem 1rem;
+    max-width: 38rem;
+    margin: 0;
+    line-height: 1.5;
+}
+
+.heroDisclaimer a {
+    color: #b91c1c;
+    font-weight: 700;
+}
+
+/* ── Buttons ─────────────────────────────────── */
+.btnPrimary {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.7rem 1.75rem;
+    background: linear-gradient(135deg, #7c3aed, #6d28d9);
+    color: #fff;
+    font-weight: 700;
+    font-size: 1rem;
+    border-radius: 0.75rem;
+    text-decoration: none;
+    transition: transform 0.15s, box-shadow 0.15s;
+    box-shadow: 0 4px 20px rgba(109, 40, 217, 0.3);
+}
+
+.btnPrimary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 28px rgba(109, 40, 217, 0.45);
+}
+
+.btnGhost {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.7rem 1.75rem;
+    background: transparent;
+    color: #6d28d9;
+    font-weight: 600;
+    font-size: 1rem;
+    border: 2px solid #ddd6fe;
+    border-radius: 0.75rem;
+    text-decoration: none;
+    transition: border-color 0.15s, background 0.15s;
+}
+
+.btnGhost:hover {
+    border-color: #7c3aed;
+    background: #f5f3ff;
+}
+
+/* ── Features grid ───────────────────────────── */
+.features {
+    background: linear-gradient(180deg, #f8f4ff 0%, #fff 100%);
+    padding: 4rem 2rem;
+}
+
+.sectionTitle {
+    text-align: center;
+    font-family: 'Outfit', 'Inter', sans-serif;
+    font-size: clamp(1.5rem, 4vw, 2.25rem);
+    font-weight: 700;
+    color: #1e1b3a;
+    margin: 0 0 2.5rem;
+    letter-spacing: -0.02em;
+}
+
+.featureGrid {
+    max-width: 72rem;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(17rem, 1fr));
+    gap: 1.25rem;
+}
+
+.featureCard {
+    background: #fff;
+    border: 1px solid #ede9fe;
+    border-radius: 1rem;
+    padding: 1.75rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    transition: box-shadow 0.2s, transform 0.15s;
+}
+
+.featureCard:hover {
+    box-shadow: 0 8px 32px rgba(109, 40, 217, 0.12);
+    transform: translateY(-2px);
+}
+
+.featureIcon {
+    font-size: 2rem;
+}
+
+.featureTitle {
+    font-weight: 700;
+    font-size: 1rem;
+    color: #1e1b3a;
+    margin: 0;
+}
+
+.featureDesc {
+    font-size: 0.9rem;
+    color: #6b7280;
+    margin: 0;
+    line-height: 1.55;
+}
+
+/* ── Crisis banner ───────────────────────────── */
+.crisisBanner {
+    background: linear-gradient(135deg, #7f1d1d, #b91c1c);
+    padding: 2.5rem 2rem;
+}
+
+.crisisBannerInner {
+    max-width: 72rem;
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+    flex-wrap: wrap;
+}
+
+.crisisBannerIcon {
+    font-size: 2.5rem;
+}
+
+.crisisBannerTitle {
+    font-size: 1.375rem;
+    font-weight: 700;
+    color: #fff;
+    margin: 0 0 0.25rem;
+}
+
+.crisisBannerText {
+    color: #fca5a5;
+    margin: 0;
+    font-size: 0.9375rem;
+}
+
+.crisisBannerNumber {
+    color: #fff;
+    font-size: 1.5rem;
+    font-weight: 900;
+    text-decoration: none;
+    letter-spacing: 0.04em;
+}
+
+.crisisBannerBtn {
+    margin-left: auto;
+    padding: 0.6rem 1.25rem;
+    background: rgba(255, 255, 255, 0.15);
+    color: #fff;
+    border: 2px solid rgba(255, 255, 255, 0.4);
+    border-radius: 0.625rem;
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 0.9rem;
+    white-space: nowrap;
+    transition: background 0.15s;
+}
+
+.crisisBannerBtn:hover {
+    background: rgba(255, 255, 255, 0.25);
+}
+
+/* ── Sign-up CTA ─────────────────────────────── */
+.signupCta {
+    padding: 5rem 2rem;
+    text-align: center;
+    background: linear-gradient(135deg, #faf5ff 0%, #ede9fe 100%);
+}
+
+.signupCtaTitle {
+    font-family: 'Outfit', sans-serif;
+    font-size: clamp(1.5rem, 4vw, 2rem);
+    font-weight: 700;
+    color: #1e1b3a;
+    margin: 0 0 0.75rem;
+}
+
+.signupCtaText {
+    color: #6b7280;
+    margin: 0 0 2rem;
+}
+
+/* ── Prose pages (About, Privacy, Terms) ─────── */
+.prose {
+    max-width: 52rem;
+    margin: 0 auto;
+    padding: 3rem 2rem 5rem;
+}
+
+.prose h1 {
+    margin-bottom: 0.25rem;
+}
+
+.prose h2 {
+    margin-top: 2rem;
+    font-size: 1.25rem;
+    color: #1e1b3a;
+}
+
+.prose p,
+.prose li {
+    color: #374151;
+    line-height: 1.7;
+}
+
+.prose a {
+    color: #6d28d9;
+}
+
+.prose ul {
+    padding-left: 1.25rem;
+}
+
+.proseTitle {
+    font-family: 'Outfit', sans-serif;
+    font-size: clamp(1.75rem, 5vw, 2.5rem);
+    font-weight: 800;
+    color: #1e1b3a;
+    margin: 0 0 0.5rem;
+    letter-spacing: -0.03em;
+}
+
+.proseMeta {
+    font-size: 0.875rem;
+    color: #9ca3af;
+    margin: 0 0 2rem;
+}
+
+/* ── Boundary disclaimer box ─────────────────── */
+.boundary {
+    background: #fef9f0;
+    border: 1.5px solid #fcd34d;
+    border-radius: 0.75rem;
+    padding: 0.875rem 1.125rem;
+    font-size: 0.875rem;
+    color: #78350f;
+    line-height: 1.6;
+    margin-bottom: 1.5rem;
+}
+
+.boundary a {
+    color: #b45309;
+}
+
+/* ── Hotline inline link ───────────────────────── */
+.hotlineInline {
+    font-weight: 800;
+    color: #b91c1c;
+    text-decoration: none;
+}
+
+.hotlineInline:hover {
+    text-decoration: underline;
+}
+
+@media (max-width: 600px) {
+    .hero {
+        padding: 3rem 1rem 2.5rem;
+    }
+
+    .features {
+        padding: 3rem 1rem;
+    }
+
+    .crisisBannerInner {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .crisisBannerBtn {
+        margin-left: 0;
+    }
+}

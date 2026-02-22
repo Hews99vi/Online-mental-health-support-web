@@ -1,0 +1,548 @@
+/* ================================================================
+   Appointments.module.css — AppointmentsPage, TherapistAppointmentsPage,
+   BookSessionModal, JoinSessionPage
+   ================================================================ */
+
+/* ── Page layout ─────────────────────────────────────────────────── */
+
+.page {
+    max-width: 860px;
+    margin: 0 auto;
+    padding: 2rem 1.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1.75rem;
+}
+
+.header {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 1rem;
+    flex-wrap: wrap;
+}
+
+.title {
+    font-size: 1.75rem;
+    font-weight: 700;
+    color: #111827;
+    letter-spacing: -0.02em;
+    margin: 0;
+}
+
+.subtitle {
+    font-size: 0.9375rem;
+    color: #6b7280;
+    margin: 0.25rem 0 0;
+}
+
+/* ── Tab strip ───────────────────────────────────────────────────── */
+
+.tabs {
+    display: flex;
+    gap: 0.25rem;
+    background: #f3f4f6;
+    border-radius: 0.75rem;
+    padding: 0.25rem;
+    width: fit-content;
+}
+
+.tab {
+    padding: 0.5rem 1.125rem;
+    border-radius: 0.5rem;
+    font-size: 0.875rem;
+    font-weight: 500;
+    font-family: inherit;
+    border: none;
+    background: transparent;
+    color: #6b7280;
+    cursor: pointer;
+    transition: background 0.15s, color 0.15s;
+}
+
+.tabActive {
+    background: #fff;
+    color: #111827;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* ── Appointment list ────────────────────────────────────────────── */
+
+.list {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+/* ── Appointment card ────────────────────────────────────────────── */
+
+.apptCard {
+    background: #fff;
+    border: 1px solid #e5e7eb;
+    border-radius: 1.25rem;
+    padding: 1.375rem;
+    display: flex;
+    align-items: flex-start;
+    gap: 1rem;
+    transition: box-shadow 0.15s;
+}
+
+.apptCard:hover {
+    box-shadow: 0 4px 18px rgba(0, 0, 0, 0.07);
+}
+
+.apptAvatar {
+    width: 3rem;
+    height: 3rem;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #7c3aed, #2563eb);
+    color: #fff;
+    font-size: 0.9375rem;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    overflow: hidden;
+}
+
+.apptAvatarImg {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.apptInfo {
+    flex: 1;
+    min-width: 0;
+}
+
+.apptName {
+    font-size: 1rem;
+    font-weight: 600;
+    color: #111827;
+    margin: 0 0 0.25rem;
+}
+
+.apptMeta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    font-size: 0.8125rem;
+    color: #6b7280;
+    margin-bottom: 0.5rem;
+}
+
+.apptMetaItem {
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+}
+
+/* Status badge */
+.statusBadge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.2rem;
+    padding: 0.2rem 0.625rem;
+    border-radius: 99px;
+    font-size: 0.7rem;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+    text-transform: uppercase;
+}
+
+.statusPending {
+    background: #fef3c7;
+    color: #92400e;
+}
+
+.statusConfirmed {
+    background: #d1fae5;
+    color: #065f46;
+}
+
+.statusCancelled {
+    background: #fee2e2;
+    color: #991b1b;
+}
+
+.statusCompleted {
+    background: #ede9fe;
+    color: #5b21b6;
+}
+
+.statusNoShow {
+    background: #f3f4f6;
+    color: #6b7280;
+}
+
+.apptNotes {
+    font-size: 0.8125rem;
+    color: #6b7280;
+    background: #f9fafb;
+    border-radius: 0.5rem;
+    padding: 0.5rem 0.75rem;
+    margin-top: 0.5rem;
+    font-style: italic;
+}
+
+/* Join / action area on card */
+.apptActions {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 0.5rem;
+    flex-shrink: 0;
+}
+
+.joinBtn {
+    padding: 0.5rem 1.125rem;
+    border-radius: 0.625rem;
+    background: #059669;
+    color: #fff;
+    font-size: 0.875rem;
+    font-weight: 600;
+    border: none;
+    cursor: pointer;
+    font-family: inherit;
+    transition: background 0.15s;
+    white-space: nowrap;
+}
+
+.joinBtn:hover {
+    background: #047857;
+}
+
+.joinBtn:disabled {
+    background: #d1d5db;
+    cursor: not-allowed;
+}
+
+.cancelBtn {
+    padding: 0.4rem 0.875rem;
+    border-radius: 0.625rem;
+    background: transparent;
+    color: #ef4444;
+    font-size: 0.8125rem;
+    font-weight: 500;
+    border: 1.5px solid #fca5a5;
+    cursor: pointer;
+    font-family: inherit;
+    transition: background 0.15s;
+}
+
+.cancelBtn:hover {
+    background: #fee2e2;
+}
+
+.countdown {
+    font-size: 0.75rem;
+    color: #9ca3af;
+    text-align: right;
+}
+
+.countdownSoon {
+    color: #059669;
+    font-weight: 600;
+}
+
+/* ── Empty state ─────────────────────────────────────────────────── */
+
+.empty {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+    padding: 4rem 1rem;
+    text-align: center;
+    color: #9ca3af;
+}
+
+.emptyTitle {
+    font-size: 1rem;
+    font-weight: 600;
+    color: #6b7280;
+    margin: 0;
+}
+
+.emptyText {
+    font-size: 0.875rem;
+    margin: 0;
+}
+
+.emptyBtn {
+    margin-top: 0.5rem;
+    padding: 0.625rem 1.375rem;
+    border-radius: 0.875rem;
+    background: #7c3aed;
+    color: #fff;
+    font-size: 0.9375rem;
+    font-weight: 600;
+    border: none;
+    cursor: pointer;
+    font-family: inherit;
+    transition: background 0.15s;
+}
+
+.emptyBtn:hover {
+    background: #6d28d9;
+}
+
+/* ── BookSessionModal ────────────────────────────────────────────── */
+
+.modalBody {
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+}
+
+.calRow {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.5rem;
+}
+
+.calLabel {
+    font-size: 0.9375rem;
+    font-weight: 600;
+    color: #111827;
+}
+
+.calNav {
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+}
+
+.iconBtn {
+    width: 2rem;
+    height: 2rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    border: none;
+    background: #f3f4f6;
+    cursor: pointer;
+    color: #374151;
+    transition: background 0.15s;
+}
+
+.iconBtn:hover {
+    background: #e5e7eb;
+}
+
+.slotGrid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    max-height: 14rem;
+    overflow-y: auto;
+}
+
+.slot {
+    padding: 0.45rem 0.875rem;
+    border-radius: 0.625rem;
+    border: 1.5px solid #e5e7eb;
+    font-size: 0.8125rem;
+    font-family: inherit;
+    cursor: pointer;
+    background: #fff;
+    color: #374151;
+    transition: border-color 0.12s, background 0.12s;
+}
+
+.slot:hover {
+    border-color: #c4b5fd;
+    background: #faf5ff;
+}
+
+.slotSelected {
+    background: #7c3aed;
+    border-color: #7c3aed;
+    color: #fff;
+}
+
+.slotUnavailable {
+    background: #f9fafb;
+    color: #d1d5db;
+    cursor: not-allowed;
+    border-color: #f3f4f6;
+}
+
+.noSlots {
+    font-size: 0.875rem;
+    color: #9ca3af;
+    padding: 0.5rem 0;
+}
+
+.notesField {
+    display: flex;
+    flex-direction: column;
+    gap: 0.375rem;
+}
+
+.notesLabel {
+    font-size: 0.8125rem;
+    font-weight: 500;
+    color: #374151;
+}
+
+.notesInput {
+    padding: 0.625rem 0.875rem;
+    border-radius: 0.625rem;
+    border: 1.5px solid #e5e7eb;
+    font-size: 0.875rem;
+    font-family: inherit;
+    color: #111827;
+    background: #fff;
+    outline: none;
+    resize: vertical;
+    min-height: 72px;
+    transition: border-color 0.15s;
+}
+
+.notesInput:focus {
+    border-color: #7c3aed;
+    box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.1);
+}
+
+/* ── JoinSessionPage ─────────────────────────────────────────────── */
+
+.joinPage {
+    max-width: 520px;
+    margin: 5rem auto 0;
+    padding: 2rem 1.5rem 4rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1.5rem;
+    text-align: center;
+}
+
+.joinCard {
+    background: #fff;
+    border: 1px solid #e5e7eb;
+    border-radius: 1.5rem;
+    padding: 2.5rem 2rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1.25rem;
+    width: 100%;
+    box-shadow: 0 4px 24px rgba(0, 0, 0, 0.07);
+}
+
+.joinAvatar {
+    width: 4.5rem;
+    height: 4.5rem;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #7c3aed, #2563eb);
+    color: #fff;
+    font-size: 1.25rem;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.joinTherapistName {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: #111827;
+    margin: 0;
+}
+
+.joinDateTime {
+    font-size: 0.9375rem;
+    color: #6b7280;
+    margin: 0;
+}
+
+.joinBtnLarge {
+    width: 100%;
+    padding: 0.9rem 1.5rem;
+    border-radius: 0.875rem;
+    background: #059669;
+    color: #fff;
+    font-size: 1rem;
+    font-weight: 700;
+    border: none;
+    cursor: pointer;
+    font-family: inherit;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    transition: background 0.15s, transform 0.12s;
+}
+
+.joinBtnLarge:hover {
+    background: #047857;
+    transform: translateY(-1px);
+}
+
+.joinBtnLarge:disabled {
+    background: #d1d5db;
+    cursor: not-allowed;
+    transform: none;
+}
+
+.joinWaiting {
+    font-size: 0.875rem;
+    color: #6b7280;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.25rem;
+}
+
+.joinCountdown {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #7c3aed;
+    letter-spacing: 0.02em;
+}
+
+/* Pulsing dot when waiting */
+.waitDot {
+    width: 0.625rem;
+    height: 0.625rem;
+    border-radius: 50%;
+    background: #7c3aed;
+    animation: pulse 1.5s ease-in-out infinite;
+}
+
+@keyframes pulse {
+
+    0%,
+    100% {
+        opacity: 1;
+        transform: scale(1);
+    }
+
+    50% {
+        opacity: 0.4;
+        transform: scale(0.75);
+    }
+}
+
+/* ── Responsive ──────────────────────────────────────────────────── */
+
+@media (max-width:640px) {
+    .page {
+        padding: 1.25rem 1rem;
+    }
+
+    .joinPage {
+        margin-top: 2rem;
+        padding: 1.25rem 1rem 3rem;
+    }
+
+    .header {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+}

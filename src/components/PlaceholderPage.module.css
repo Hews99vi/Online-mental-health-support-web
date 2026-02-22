@@ -1,0 +1,42 @@
+.page {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 60vh;
+    text-align: center;
+    gap: 0.75rem;
+    padding: 2rem;
+}
+
+.icon {
+    font-size: 3.5rem;
+    line-height: 1;
+}
+
+.title {
+    font-family: 'Outfit', 'Inter', sans-serif;
+    font-size: 1.875rem;
+    font-weight: 700;
+    color: var(--color-text, #1e1b3a);
+    margin: 0;
+}
+
+.description {
+    font-size: 1rem;
+    color: var(--color-text-muted, #6b7280);
+    max-width: 28rem;
+    margin: 0;
+    line-height: 1.6;
+}
+
+.badge {
+    display: inline-block;
+    background: var(--color-primary-light, #ede9fe);
+    color: var(--color-primary, #6d28d9);
+    font-size: 0.8125rem;
+    font-weight: 600;
+    padding: 0.3rem 0.875rem;
+    border-radius: 2rem;
+    margin: 0;
+}
