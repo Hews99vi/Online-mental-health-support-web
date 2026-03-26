@@ -1,0 +1,319 @@
+@baseUrl = http://localhost:4000/api
+@token = {{login.response.body.data.accessToken}}
+@adminToken = {{adminLogin.response.body.data.accessToken}}
+
+### Health
+GET {{baseUrl}}/health
+
+### Register user
+# @name register
+POST {{baseUrl}}/auth/register
+Content-Type: application/json
+
+{
+  "name": "Test User",
+  "email": "test.user@example.com",
+  "password": "Password123",
+  "role": "user"
+}
+
+### Register admin (optional for testing approvals)
+# @name adminRegister
+POST {{baseUrl}}/auth/register
+Content-Type: application/json
+
+{
+  "name": "Admin User",
+  "email": "admin.user@example.com",
+  "password": "Password123",
+  "role": "admin"
+}
+
+### Login
+# @name login
+POST {{baseUrl}}/auth/login
+Content-Type: application/json
+
+{
+  "email": "test.user@example.com",
+  "password": "Password123"
+}
+
+### Admin login
+# @name adminLogin
+POST {{baseUrl}}/auth/login
+Content-Type: application/json
+
+{
+  "email": "admin.user@example.com",
+  "password": "Password123"
+}
+
+### Me
+GET {{baseUrl}}/auth/me
+Authorization: Bearer {{token}}
+
+### Profile update
+PUT {{baseUrl}}/profile/me
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "displayName": "Test User",
+  "avatarUrl": "https://example.com/avatar.png",
+  "preferences": { "newsletter": false }
+}
+
+### Consent get
+GET {{baseUrl}}/consent/me
+Authorization: Bearer {{token}}
+
+### Consent update
+PUT {{baseUrl}}/consent/me
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "termsAccepted": true,
+  "privacyAccepted": true,
+  "biometricConsent": false,
+  "aiConsent": true,
+  "analyticsConsent": false
+}
+
+### Crisis resources
+GET {{baseUrl}}/crisis/resources
+
+### Mood create
+POST {{baseUrl}}/mood
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "date": "2026-03-22",
+  "moodScore": 4,
+  "tags": ["Calm", "Hopeful"],
+  "note": "A steady day with less stress."
+}
+
+### Mood list
+GET {{baseUrl}}/mood
+Authorization: Bearer {{token}}
+
+### Mood history
+GET {{baseUrl}}/mood/history?from=2026-03-01&to=2026-03-31
+Authorization: Bearer {{token}}
+
+### Journal list
+GET {{baseUrl}}/journal
+Authorization: Bearer {{token}}
+
+### Journal create
+# @name journalCreate
+POST {{baseUrl}}/journal
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "title": "Small win today",
+  "content": "I slowed down, wrote a few thoughts, and felt more grounded by the evening."
+}
+
+### Journal get by id
+GET {{baseUrl}}/journal/{{journalCreate.response.body.data.entry.id}}
+Authorization: Bearer {{token}}
+
+### Journal update
+PUT {{baseUrl}}/journal/{{journalCreate.response.body.data.entry.id}}
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "title": "Small win today",
+  "content": "I slowed down, wrote a few thoughts, and felt more grounded by the evening. Updating this note."
+}
+
+### Journal delete
+DELETE {{baseUrl}}/journal/{{journalCreate.response.body.data.entry.id}}
+Authorization: Bearer {{token}}
+
+### Public library list (published)
+GET {{baseUrl}}/library
+
+### Public library detail by id (published)
+GET {{baseUrl}}/library/<libraryItemId>
+
+### Admin library list including drafts
+GET {{baseUrl}}/library?includeDraft=true
+Authorization: Bearer {{adminToken}}
+
+### Admin library create
+# @name createLibrary
+POST {{baseUrl}}/admin/library
+Authorization: Bearer {{adminToken}}
+Content-Type: application/json
+
+{
+  "title": "Grounding Through Breath",
+  "category": "Mindfulness",
+  "content": "A short grounding protocol using paced breath and sensory awareness.",
+  "tags": ["breathing", "grounding"],
+  "status": "draft"
+}
+
+### Admin library update
+PUT {{baseUrl}}/admin/library/{{createLibrary.response.body.data.item.id}}
+Authorization: Bearer {{adminToken}}
+Content-Type: application/json
+
+{
+  "status": "published",
+  "content": "An updated grounding protocol with clear step-by-step instructions."
+}
+
+### Admin library delete
+DELETE {{baseUrl}}/admin/library/{{createLibrary.response.body.data.item.id}}
+Authorization: Bearer {{adminToken}}
+
+### Therapist apply
+# @name therapistApply
+POST {{baseUrl}}/therapist/apply
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "fullName": "Dr. Test User",
+  "licenseNo": "LIC-1234",
+  "specialization": ["anxiety", "depression"],
+  "bio": "Experienced therapist",
+  "documents": ["license.pdf"]
+}
+
+### Therapist me
+GET {{baseUrl}}/therapist/me
+Authorization: Bearer {{token}}
+
+### Therapist publish availability
+# @name publishAvailability
+POST {{baseUrl}}/therapist/availability
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "startTime": "2026-03-25T09:00:00.000Z",
+  "endTime": "2026-03-25T10:00:00.000Z"
+}
+
+### Therapist own availability
+GET {{baseUrl}}/therapist/availability
+Authorization: Bearer {{token}}
+
+### Public therapists
+GET {{baseUrl}}/therapists?verified=true
+
+### Public therapist availability
+GET {{baseUrl}}/therapists/<therapistUserId>/availability
+
+### Book appointment (user)
+# @name createAppointment
+POST {{baseUrl}}/appointments
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "therapistId": "<therapistUserId>",
+  "slotId": "<slotId>",
+  "userNotes": "Looking for support with anxiety."
+}
+
+### User appointments
+GET {{baseUrl}}/appointments/me
+Authorization: Bearer {{token}}
+
+### Therapist appointments
+GET {{baseUrl}}/appointments/therapist
+Authorization: Bearer {{token}}
+
+### Therapist confirm appointment
+POST {{baseUrl}}/appointments/{{createAppointment.response.body.data.appointment.id}}/confirm
+Authorization: Bearer {{token}}
+
+### Therapist cancel appointment
+POST {{baseUrl}}/appointments/{{createAppointment.response.body.data.appointment.id}}/cancel
+Authorization: Bearer {{token}}
+
+### Admin list pending
+GET {{baseUrl}}/admin/therapists?status=pending
+Authorization: Bearer {{adminToken}}
+
+### Admin approve (replace :id)
+POST {{baseUrl}}/admin/therapists/:id/approve
+Authorization: Bearer {{adminToken}}
+
+### Admin reject (replace :id)
+POST {{baseUrl}}/admin/therapists/:id/reject
+Authorization: Bearer {{adminToken}}
+Content-Type: application/json
+
+{
+  "reason": "Incomplete documentation"
+}
+
+### Admin analytics
+GET {{baseUrl}}/admin/analytics
+Authorization: Bearer {{adminToken}}
+
+### Report create
+# @name createReport
+POST {{baseUrl}}/reports
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "targetType": "therapist",
+  "targetId": "<targetId>",
+  "reason": "Reported behavior needs admin review."
+}
+
+### Admin report list
+GET {{baseUrl}}/admin/reports
+Authorization: Bearer {{adminToken}}
+
+### Admin close report
+POST {{baseUrl}}/admin/reports/{{createReport.response.body.data.report.id}}/close
+Authorization: Bearer {{adminToken}}
+
+### Chat queue (user)
+# @name chatQueueUser
+POST {{baseUrl}}/chat/queue
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "role": "user"
+}
+
+### Chat assign (listener)
+POST {{baseUrl}}/chat/{{chatQueueUser.response.body.data.session.id}}/assign
+Authorization: Bearer {{token}}
+
+### Chat messages list
+GET {{baseUrl}}/chat/{{chatQueueUser.response.body.data.session.id}}/messages
+Authorization: Bearer {{token}}
+
+### Chat send message
+POST {{baseUrl}}/chat/{{chatQueueUser.response.body.data.session.id}}/messages
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "text": "Hello, I need support."
+}
+
+### Chat close session
+POST {{baseUrl}}/chat/{{chatQueueUser.response.body.data.session.id}}/close
+Authorization: Bearer {{token}}
+
+### Secure user
+GET {{baseUrl}}/secure/user
+Authorization: Bearer {{token}}
