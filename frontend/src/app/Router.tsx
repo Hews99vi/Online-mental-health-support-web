@@ -50,6 +50,7 @@ import { ListenerOnlinePage } from '../pages/listener/ListenerOnlinePage';
 import { ListenerChatsPage } from '../pages/listener/ListenerChatsPage';
 import { ListenerHistoryPage } from '../pages/listener/ListenerHistoryPage';
 import { ListenerSafetyPage } from '../pages/listener/ListenerSafetyPage';
+import { ClientTherapistMessagesPage } from '../pages/client/ClientTherapistMessagesPage';
 
 // ── Therapist pages
 import { TherapistSchedulePage } from '../pages/therapist/TherapistSchedulePage';
@@ -129,6 +130,7 @@ export function AppRouter() {
                         <Route element={<RoleRoute allowedRoles={['user']} />}>
                             <Route path="/therapists/apply" element={<TherapistOnboardingPage />} />
                             <Route path="/listener/apply" element={<ListenerApplicationPage />} />
+                            <Route path="/therapist-messages" element={<ClientTherapistMessagesPage />} />
                         </Route>
                         <Route path="/therapists/:id" element={<TherapistProfilePage />} />
                         <Route path="/bookings" element={<AppointmentsPage />} />

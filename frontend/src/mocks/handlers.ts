@@ -401,6 +401,28 @@ const therapistHandlers = [
 
 const demoAppointments: Array<Record<string, unknown>> = [...SEED_APPOINTMENTS];
 
+interface DemoTherapistClientMessage {
+    id: string;
+    therapistUserId: string;
+    clientUserId: string;
+    appointmentId: string | null;
+    senderRole: 'therapist' | 'client';
+    text: string;
+    createdAt: string;
+}
+
+const demoTherapistClientMessages: DemoTherapistClientMessage[] = [
+    {
+        id: 'tcm-001',
+        therapistUserId: 'th-001',
+        clientUserId: 'u-001',
+        appointmentId: 'appt-001',
+        senderRole: 'therapist',
+        text: 'Hi Alex, I confirmed our session. Please bring any notes about coping strategies you want to discuss.',
+        createdAt: new Date(Date.now() - 3 * 3600000).toISOString(),
+    },
+];
+
 type ReportStatus = 'open' | 'closed';
 
 interface DemoReport {
@@ -457,6 +479,102 @@ function normalizeAppointment(value: Record<string, unknown>) {
         status: String(value.status ?? 'requested'),
     };
 }
+
+function confirmedTherapistIdsForClient(clientUserId: string) {
+    return [...new Set(
+        demoAppointments
+            .filter((appointment) => (
+                String(appointment.userId ?? '') === clientUserId
+                && ['confirmed', 'completed'].includes(String(appointment.status ?? ''))
+            ))
+            .map((appointment) => String(appointment.therapistId ?? appointment.therapistUserId ?? ''))
+            .filter(Boolean)
+    )];
+}
+
+function therapistThreadFor(therapistId: string, clientUserId: string) {
+    const therapist = SEED_THERAPISTS.find((item) => item.id === therapistId);
+    const therapistName = therapist?.name ?? 'Therapist';
+    const latestMessage = [...demoTherapistClientMessages]
+        .filter((message) => message.therapistUserId === therapistId && message.clientUserId === clientUserId)
+        .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())[0] ?? null;
+
+    return {
+        therapistId,
+        therapistName,
+        therapistInitials: therapistName
+            .split(' ')
+            .filter(Boolean)
+            .slice(0, 2)
+            .map((part) => part[0]?.toUpperCase() ?? '')
+            .join('') || 'TH',
+        latestMessage,
+        latestAt: latestMessage?.createdAt ?? null,
+    };
+}
+
+const therapistClientMessageHandlers = [
+    http.get(`${BASE}/client/therapist-messages`, async () => {
+        await delay(LAG);
+        const clientUserId = 'u-001';
+        const items = confirmedTherapistIdsForClient(clientUserId)
+            .map((therapistId) => therapistThreadFor(therapistId, clientUserId))
+            .sort((a, b) => {
+                const aTime = a.latestAt ? new Date(a.latestAt).getTime() : 0;
+                const bTime = b.latestAt ? new Date(b.latestAt).getTime() : 0;
+                return bTime - aTime;
+            });
+
+        return json({ ok: true, data: { items, total: items.length } });
+    }),
+
+    http.get(`${BASE}/client/therapists/:therapistId/messages`, async ({ params, request }) => {
+        await delay(LAG);
+        const clientUserId = 'u-001';
+        const therapistId = String(params.therapistId);
+        if (!confirmedTherapistIdsForClient(clientUserId).includes(therapistId)) {
+            return json({ ok: false, error: { message: 'Therapist not found for this client', code: 'NOT_FOUND' } }, 404);
+        }
+
+        const url = new URL(request.url);
+        const appointmentId = url.searchParams.get('appointmentId');
+        const items = demoTherapistClientMessages.filter((message) => (
+            message.therapistUserId === therapistId
+            && message.clientUserId === clientUserId
+            && (!appointmentId || message.appointmentId === appointmentId)
+        ));
+
+        return json({ ok: true, data: { items, total: items.length } });
+    }),
+
+    http.post(`${BASE}/client/therapists/:therapistId/messages`, async ({ params, request }) => {
+        await delay(LAG);
+        const clientUserId = 'u-001';
+        const therapistId = String(params.therapistId);
+        if (!confirmedTherapistIdsForClient(clientUserId).includes(therapistId)) {
+            return json({ ok: false, error: { message: 'Therapist not found for this client', code: 'NOT_FOUND' } }, 404);
+        }
+
+        const body = await request.json() as { text?: string; appointmentId?: string | null };
+        const text = body.text?.trim();
+        if (!text) {
+            return json({ ok: false, error: { message: 'text is required', code: 'VALIDATION_ERROR' } }, 400);
+        }
+
+        const message: DemoTherapistClientMessage = {
+            id: `tcm-${Date.now()}`,
+            therapistUserId: therapistId,
+            clientUserId,
+            appointmentId: body.appointmentId ?? null,
+            senderRole: 'client',
+            text,
+            createdAt: new Date().toISOString(),
+        };
+        demoTherapistClientMessages.push(message);
+
+        return json({ ok: true, message: 'Message saved', data: { message } }, 201);
+    }),
+];
 
 const appointmentHandlers = [
     http.post(`${BASE}/appointments`, async ({ request }) => {
@@ -1153,6 +1271,7 @@ export const handlers = [
     ...authHandlers,
     ...therapistHandlers,
     ...appointmentHandlers,
+    ...therapistClientMessageHandlers,
     ...moodHandlers,
     ...journalHandlers,
     ...libraryHandlers,

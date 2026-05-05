@@ -28,6 +28,7 @@ const NAV_CONFIG: Record<AppRole, NavItem[]> = {
         { label: 'Apply as Listener', path: '/listener/apply', icon: '🎧' },
         { label: 'Apply as Therapist', path: '/therapists/apply', icon: '🩺' },
         { label: 'My Bookings', path: '/bookings', icon: '📅' },
+        { label: 'Therapist Messages', path: '/therapist-messages', icon: '✉' },
         { label: 'Mood Tracker', path: '/mood/history', icon: '📊' },
         { label: 'Journal', path: '/journal', icon: '📝' },
         { label: 'Self-Help Library', path: '/library', icon: '📚' },

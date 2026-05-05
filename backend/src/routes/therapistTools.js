@@ -12,6 +12,7 @@ import { User } from '../models/User.js';
 import { ok, fail } from '../utils/responses.js';
 
 const router = Router();
+const MESSAGING_APPOINTMENT_STATUSES = ['confirmed', 'completed'];
 
 async function ensureApprovedTherapist(therapistUserId) {
   return TherapistProfile.findOne({
@@ -25,9 +26,28 @@ async function ensureTherapistClientRelation(therapistUserId, clientUserId) {
   const relation = await Appointment.exists({
     therapistUserId,
     userId: clientUserId,
-    status: { $in: ['requested', 'confirmed', 'completed'] }
+    status: { $in: MESSAGING_APPOINTMENT_STATUSES }
   });
   return Boolean(relation);
+}
+
+async function ensureClientTherapistRelation(clientUserId, therapistUserId) {
+  if (!mongoose.isValidObjectId(therapistUserId)) return false;
+  const relation = await Appointment.exists({
+    therapistUserId,
+    userId: clientUserId,
+    status: { $in: MESSAGING_APPOINTMENT_STATUSES }
+  });
+  return Boolean(relation);
+}
+
+function initials(name) {
+  return String(name || '')
+    .trim()
+    .split(/\s+/)
+    .slice(0, 2)
+    .map((part) => part[0]?.toUpperCase() ?? '')
+    .join('') || 'TH';
 }
 
 function mapMessage(message) {
@@ -39,6 +59,28 @@ function mapMessage(message) {
     senderRole: message.senderRole,
     text: message.text,
     createdAt: message.createdAt instanceof Date ? message.createdAt.toISOString() : new Date(message.createdAt).toISOString()
+  };
+}
+
+function mapTherapistThread(profile, latestMessage = null) {
+  const therapistName = profile?.fullName || 'Therapist';
+  return {
+    therapistId: profile?.userId?.toString() || null,
+    therapistName,
+    therapistInitials: initials(therapistName),
+    latestMessage: latestMessage
+      ? {
+          id: latestMessage._id.toString(),
+          senderRole: latestMessage.senderRole,
+          text: latestMessage.text,
+          createdAt: latestMessage.createdAt instanceof Date
+            ? latestMessage.createdAt.toISOString()
+            : new Date(latestMessage.createdAt).toISOString()
+        }
+      : null,
+    latestAt: latestMessage
+      ? (latestMessage.createdAt instanceof Date ? latestMessage.createdAt.toISOString() : new Date(latestMessage.createdAt).toISOString())
+      : null
   };
 }
 
@@ -108,6 +150,145 @@ router.get('/therapist/resources/catalog', verifyToken, requireRole('therapist')
   }
 });
 
+router.get('/client/therapist-messages', verifyToken, requireRole('user'), async (req, res, next) => {
+  try {
+    const appointments = await Appointment.find({
+      userId: req.user.id,
+      status: { $in: MESSAGING_APPOINTMENT_STATUSES }
+    })
+      .sort({ createdAt: -1 })
+      .lean();
+
+    const therapistIds = [...new Set(appointments.map((item) => item.therapistUserId.toString()))];
+    if (therapistIds.length === 0) {
+      return ok(res, { items: [], total: 0 });
+    }
+
+    const [profiles, latestMessages] = await Promise.all([
+      TherapistProfile.find({ userId: { $in: therapistIds } }).lean(),
+      Promise.all(
+        therapistIds.map((therapistId) =>
+          TherapistClientMessage.findOne({
+            therapistUserId: therapistId,
+            clientUserId: req.user.id
+          })
+            .sort({ createdAt: -1 })
+            .lean()
+        )
+      )
+    ]);
+
+    const profileByUser = new Map(profiles.map((profile) => [profile.userId.toString(), profile]));
+    const latestByTherapist = new Map(
+      therapistIds.map((therapistId, index) => [therapistId, latestMessages[index]])
+    );
+
+    const items = therapistIds
+      .map((therapistId) => {
+        const profile = profileByUser.get(therapistId) || { userId: therapistId, fullName: 'Therapist' };
+        return mapTherapistThread(profile, latestByTherapist.get(therapistId));
+      })
+      .sort((a, b) => {
+        const aTime = a.latestAt ? new Date(a.latestAt).getTime() : 0;
+        const bTime = b.latestAt ? new Date(b.latestAt).getTime() : 0;
+        return bTime - aTime;
+      });
+
+    return ok(res, { items, total: items.length });
+  } catch (err) {
+    return next(err);
+  }
+});
+
+router.get('/client/therapists/:therapistId/messages', verifyToken, requireRole('user'), async (req, res, next) => {
+  try {
+    const { therapistId } = req.params;
+    const appointmentId = req.query.appointmentId ? String(req.query.appointmentId).trim() : '';
+
+    if (!mongoose.isValidObjectId(therapistId)) {
+      return fail(res, 'Therapist not found', 404, 'NOT_FOUND');
+    }
+    if (appointmentId && !mongoose.isValidObjectId(appointmentId)) {
+      return fail(res, 'Invalid appointment id', 400, 'VALIDATION_ERROR');
+    }
+
+    const hasRelation = await ensureClientTherapistRelation(req.user.id, therapistId);
+    if (!hasRelation) {
+      return fail(res, 'Therapist not found for this client', 404, 'NOT_FOUND');
+    }
+
+    if (appointmentId) {
+      const ownsAppointment = await Appointment.exists({
+        _id: appointmentId,
+        therapistUserId: therapistId,
+        userId: req.user.id,
+        status: { $in: MESSAGING_APPOINTMENT_STATUSES }
+      });
+      if (!ownsAppointment) {
+        return fail(res, 'Appointment not found for this therapist-client pair', 404, 'NOT_FOUND');
+      }
+    }
+
+    const filter = {
+      therapistUserId: therapistId,
+      clientUserId: req.user.id
+    };
+    if (appointmentId) {
+      filter.appointmentId = appointmentId;
+    }
+
+    const items = await TherapistClientMessage.find(filter).sort({ createdAt: 1 }).lean();
+    return ok(res, { items: items.map(mapMessage), total: items.length });
+  } catch (err) {
+    return next(err);
+  }
+});
+
+router.post('/client/therapists/:therapistId/messages', verifyToken, requireRole('user'), async (req, res, next) => {
+  try {
+    const { therapistId } = req.params;
+    const text = String(req.body.text || '').trim();
+    const appointmentId = req.body.appointmentId ? String(req.body.appointmentId).trim() : '';
+
+    if (!mongoose.isValidObjectId(therapistId)) {
+      return fail(res, 'Therapist not found', 404, 'NOT_FOUND');
+    }
+    if (!text) return fail(res, 'text is required', 400, 'VALIDATION_ERROR');
+    if (appointmentId && !mongoose.isValidObjectId(appointmentId)) {
+      return fail(res, 'Invalid appointment id', 400, 'VALIDATION_ERROR');
+    }
+
+    const hasRelation = await ensureClientTherapistRelation(req.user.id, therapistId);
+    if (!hasRelation) {
+      return fail(res, 'Therapist not found for this client', 404, 'NOT_FOUND');
+    }
+
+    if (appointmentId) {
+      const ownsAppointment = await Appointment.exists({
+        _id: appointmentId,
+        therapistUserId: therapistId,
+        userId: req.user.id,
+        status: { $in: MESSAGING_APPOINTMENT_STATUSES }
+      });
+      if (!ownsAppointment) {
+        return fail(res, 'Appointment not found for this therapist-client pair', 404, 'NOT_FOUND');
+      }
+    }
+
+    const message = await TherapistClientMessage.create({
+      therapistUserId: therapistId,
+      clientUserId: req.user.id,
+      appointmentId: appointmentId || null,
+      senderRole: 'client',
+      text
+    });
+
+    return ok(res, { message: mapMessage(message) }, 'Message saved', 201);
+  } catch (err) {
+    return next(err);
+  }
+});
+
 router.get('/therapist/clients/:clientId/messages', verifyToken, requireRole('therapist'), async (req, res, next) => {
   try {
     const { clientId } = req.params;
@@ -165,7 +346,8 @@ router.post('/therapist/clients/:clientId/messages', verifyToken, requireRole('t
       const ownsAppointment = await Appointment.exists({
         _id: appointmentId,
         therapistUserId: req.user.id,
-        userId: clientId
+        userId: clientId,
+        status: { $in: MESSAGING_APPOINTMENT_STATUSES }
       });
       if (!ownsAppointment) {
         return fail(res, 'Appointment not found for this therapist-client pair', 404, 'NOT_FOUND');

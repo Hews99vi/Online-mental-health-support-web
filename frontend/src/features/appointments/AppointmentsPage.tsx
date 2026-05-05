@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { CalendarDays, Video, Clock, Stethoscope } from 'lucide-react';
+import { CalendarDays, Video, Clock, Stethoscope, MessageCircle } from 'lucide-react';
 import { http } from '../../api/http';
 import type { Appointment, AppointmentStatus } from './types';
 import type { AvailabilitySlot } from '../therapists/types';
@@ -94,12 +94,14 @@ function AppointmentCard({
     onJoin,
     onCancel,
     onReschedule,
+    onMessages,
     isBusy,
 }: {
     appt: Appointment;
     onJoin: (id: string) => void;
     onCancel: (id: string) => void;
     onReschedule: (appointment: Appointment) => void;
+    onMessages: (therapistId: string) => void;
     isBusy: boolean;
 }) {
     const [tick, setTick] = useState(0);
@@ -171,6 +173,12 @@ function AppointmentCard({
                 {appt.status === 'confirmed' && ms > 0 && (
                     <button type="button" className={styles.cancelBtn} onClick={() => onCancel(appt.id)} disabled={isBusy}>
                         {isBusy ? 'Cancelling...' : 'Cancel'}
+                    </button>
+                )}
+                {(appt.status === 'confirmed' || appt.status === 'completed') && (
+                    <button type="button" className={styles.messageBtn} onClick={() => onMessages(appt.therapistId)}>
+                        <MessageCircle size={14} aria-hidden="true" />
+                        Messages
                     </button>
                 )}
                 {(appt.status === 'confirmed' || appt.status === 'requested') && ms > 0 && (
@@ -262,6 +270,10 @@ export function AppointmentsPage() {
             setBusyId(null);
         }
     }, []);
+
+    const openTherapistMessages = useCallback((therapistId: string) => {
+        navigate(`/therapist-messages?therapistId=${encodeURIComponent(therapistId)}`);
+    }, [navigate]);
 
     const now = Date.now();
 
@@ -359,6 +371,7 @@ export function AppointmentsPage() {
                                 onJoin={(id) => navigate(`/appointments/${id}/join`)}
                                 onCancel={(id) => void cancelAppointment(id)}
                                 onReschedule={(appointment) => void rescheduleAppointment(appointment)}
+                                onMessages={openTherapistMessages}
                                 isBusy={busyId === a.id}
                             />
                         </div>

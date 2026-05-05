@@ -236,6 +236,29 @@
     background: #fee2e2;
 }
 
+.messageBtn {
+    padding: 0.42rem 0.875rem;
+    border-radius: 0.625rem;
+    background: #ecfdf5;
+    color: #047857;
+    font-size: 0.8125rem;
+    font-weight: 600;
+    border: 1.5px solid #a7f3d0;
+    cursor: pointer;
+    font-family: inherit;
+    transition: background 0.15s, border-color 0.15s;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.35rem;
+    white-space: nowrap;
+}
+
+.messageBtn:hover {
+    background: #d1fae5;
+    border-color: #6ee7b7;
+}
+
 .countdown {
     font-size: 0.75rem;
     color: #9ca3af;
